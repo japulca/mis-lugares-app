@@ -22,6 +22,21 @@
       },
       "edgeToEdgeEnabled": true
     },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "La app necesita acceso a tus fotos para subir imágenes de lugares."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "La app necesita acceder a la cámara para tomar fotos."
+        }
+      ]
+    ],
+
     "web": {
       "favicon": "./assets/favicon.png"
     }
