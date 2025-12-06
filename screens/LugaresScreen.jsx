@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Text,
+  Alert,
 } from "react-native";
 import {
   getLugaresByUsuario,
@@ -14,7 +15,6 @@ import {
   actualizarLugar,
 } from "../api/supabase";
 import LugarCard from "../components/LugarCard";
-
 import FormularioLugar from "../components/FormularioLugar";
 
 export default function LugaresScreen({ route }) {
@@ -22,9 +22,8 @@ export default function LugaresScreen({ route }) {
   const [loading, setLoading] = useState(true);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [lugarEditando, setLugarEditando] = useState(null);
-  // Extraer el usuario que te pasaron
+
   const { usuario } = route.params;
-  //       ↑ Esto viene de navigation.navigate('Lugares', { usuario: ... })
 
   useEffect(() => {
     cargarLugares();
@@ -38,34 +37,59 @@ export default function LugaresScreen({ route }) {
   };
 
   const handleCrear = async (datos) => {
-    await crearLugar({ ...datos, usuario_id: usuario.id });
-    setMostrarForm(false);
-    cargarLugares();
+    try {
+      const nuevoLugar = await crearLugar({
+        nombre_lugar: datos.nombre_lugar,
+        descripcion: datos.descripcion,
+        usuario_id: usuario.id,
+        imagen_path: datos.imagen_path,
+      });
+
+      setLugares([...lugares, nuevoLugar[0]]);
+      setMostrarForm(false);
+    } catch (error) {
+      console.error("Error al crear lugar:", error);
+      Alert.alert("Error", "No se pudo crear el lugar");
+    }
   };
 
   const handleEliminar = async (id) => {
     await eliminarLugar(id);
-    cargarLugares();
+    setLugares(lugares.filter((lugar) => lugar.id !== id));
   };
 
   const handleEditar = (lugar) => {
     setLugarEditando(lugar);
-
     setMostrarForm(true);
   };
 
   const handleActualizar = async (datos) => {
-    console.log("🔴 handleActualizar recibe:", datos); // ← AÑADE
-    console.log("🔴 imagen_path:", datos.imagen_path); // ← AÑADE
-    await actualizarLugar(datos.id, {
-      nombre_lugar: datos.nombre_lugar,
-      descripcion: datos.descripcion,
-      imagen_path: datos.imagen_path,
-    });
+    try {
+      await actualizarLugar(datos.id, {
+        nombre_lugar: datos.nombre_lugar,
+        descripcion: datos.descripcion,
+        imagen_path: datos.imagen_path,
+      });
 
-    setMostrarForm(false);
-    setLugarEditando(null);
-    cargarLugares();
+      setLugares(
+        lugares.map((lugar) =>
+          lugar.id === datos.id
+            ? {
+                ...lugar,
+                nombre_lugar: datos.nombre_lugar,
+                descripcion: datos.descripcion,
+                imagen_path: datos.imagen_path,
+              }
+            : lugar
+        )
+      );
+
+      setMostrarForm(false);
+      setLugarEditando(null);
+    } catch (error) {
+      console.error("Error al actualizar lugar:", error);
+      Alert.alert("Error", "No se pudo actualizar el lugar");
+    }
   };
 
   if (loading) {
@@ -81,15 +105,22 @@ export default function LugaresScreen({ route }) {
       <Text style={styles.titulo}>Lugares de {usuario.nombre}</Text>
 
       <Button
+        color="#ae1c1cff"
         title={mostrarForm ? "Cancelar" : "+ Crear Lugar"}
-        onPress={() => setMostrarForm(!mostrarForm)}
+        onPress={() => {
+          setMostrarForm(!mostrarForm);
+          if (mostrarForm) setLugarEditando(null);
+        }}
       />
 
       {mostrarForm && (
         <FormularioLugar
           lugarParaEditar={lugarEditando}
           onGuardar={lugarEditando ? handleActualizar : handleCrear}
-          onCancelar={() => setMostrarForm(false)}
+          onCancelar={() => {
+            setMostrarForm(false);
+            setLugarEditando(null);
+          }}
         />
       )}
 

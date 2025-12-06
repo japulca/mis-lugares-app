@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 10,
   },
-  // AÑADIR ESTILO PARA LA IMAGEN
+
   imagenLugar: {
     width: 60,
     height: 60,
@@ -74,8 +74,10 @@ const styles = StyleSheet.create({
   bottons: {
     flexDirection: "row",
     gap: 10,
+    marginTop: 10,
   },
   info: {
+    alignItems: "center",
     flex: 1,
   },
   nombre: {

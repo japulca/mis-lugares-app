@@ -15,12 +15,14 @@ import {
 import FormularioUsuario from "../components/FormularioUsuario";
 import UsuarioCard from "../components/UsuarioCard";
 import { ImageBackground } from "react-native";
+import Mapa from "../components/Mapa";
 
-export default function UsuariosScreen({ navigation }) {
+export default function UsuariosScreen() {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mostrarForm, setMostrarForm] = useState(false);
   const [usuarioEditando, setUsuarioEditando] = useState(null);
+  const [verMapa, setVerMapa] = useState(false);
 
   useEffect(() => {
     cargarUsuarios();
@@ -45,9 +47,8 @@ export default function UsuariosScreen({ navigation }) {
   };
 
   const handleEditar = (usuario) => {
-    // Guardar el usuario que quieres editar
     setUsuarioEditando(usuario);
-    // Mostrar el formulario
+
     setMostrarForm(true);
   };
 
@@ -85,12 +86,16 @@ export default function UsuariosScreen({ navigation }) {
           title={mostrarForm ? "Cancelar" : "+ Crear Usuario"}
           onPress={() => setMostrarForm(!mostrarForm)}
         />
+        <Button
+          color="#2374c0ff"
+          title={verMapa ? "Cancelar" : "Ver Mapa"}
+          onPress={() => setVerMapa(!verMapa)}
+        />
 
         {mostrarForm && (
           <FormularioUsuario
             usuarioParaEditar={usuarioEditando}
             onGuardar={usuarioEditando ? handleActualizar : handleCrear}
-            onCancelar={() => setMostrarForm(false)}
           />
         )}
 
@@ -104,6 +109,7 @@ export default function UsuariosScreen({ navigation }) {
               onEditar={() => handleEditar(item)}
             />
           )}
+          ListFooterComponent={verMapa ? <Mapa /> : null}
         />
       </View>
     </ImageBackground>

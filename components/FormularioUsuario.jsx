@@ -3,10 +3,9 @@ import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
 
 export default function FormularioUsuario({
   onGuardar,
-  onCancelar,
+
   usuarioParaEditar,
 }) {
-  
   const [nombre, setNombre] = useState(usuarioParaEditar?.nombre || "");
   const [email, setEmail] = useState(usuarioParaEditar?.email || "");
 
@@ -43,7 +42,6 @@ export default function FormularioUsuario({
           title={usuarioParaEditar ? "Actualizar" : "Guardar"}
           onPress={handleGuardar}
         />
-        <Button title="Cancelar" onPress={onCancelar} color="gray" />
       </View>
     </View>
   );

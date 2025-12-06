@@ -25,7 +25,7 @@ export default function UsuarioCard({ usuario, onEliminar, onEditar }) {
 
   const irALugares = () => {
     navigation.navigate("Lugares", { usuario: usuario });
-    //                   ↑ Nombre      ↑ Datos que pasas
+    //
   };
 
   return (
@@ -64,9 +64,11 @@ const styles = StyleSheet.create({
   bottons: {
     flexDirection: "row",
     gap: 10,
+    marginTop: 10,
   },
   info: {
     flex: 1,
+    alignItems: "center",
   },
   nombre: {
     fontSize: 18,
